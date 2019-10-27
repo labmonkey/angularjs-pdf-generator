@@ -1,0 +1,26 @@
+<div class="container">
+  <form #documentForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Nazwa</label>
+      <input type="text" class="form-control" id="name" name="name" required [(ngModel)]="model.name">
+    </div>
+
+    <div class="form-group">
+      <label for="price">Cena oprawy</label>
+      <input type="text" class="form-control" id="price" name="price" required [(ngModel)]="model.price">
+    </div>
+
+    <div class="form-group">
+      <label for="discount">Wielkość zniżki</label>
+      <input type="text" class="form-control" id="discount" name="discount" required [(ngModel)]="model.discount">
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Ilość naklejek</label>
+      <input type="text" class="form-control" id="amount" name="amount" required [(ngModel)]="model.amount">
+    </div>
+
+    <button type="submit" class="btn btn-success">Generuj Dokument</button>
+
+  </form>
+</div>

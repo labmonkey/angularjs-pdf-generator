@@ -1,7 +1,9 @@
 <div class="content">
   <div class="forms">
-
+    <app-document-form></app-document-form>
   </div>
-  <iframe class="doc" [src]="pdfUrl | safe"></iframe>
+  <div class="document">
+    <app-pdf-container class="expand"></app-pdf-container>
+  </div>
 
 </div>
