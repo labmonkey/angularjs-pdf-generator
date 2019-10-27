@@ -8,4 +8,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 ## Build
 
-Deploy to GitHub Pages using `ng build --prod --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer --base-href 'https://labmonkey.github.io/angularjs-pdf-generator/' && git subtree push --prefix dist origin gh-pages`
+Deploy to GitHub Pages using `ng build --prod --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer --base-href 'https://labmonkey.github.io/angularjs-pdf-generator/app/'`
+Then push changes and
+`git subtree push --prefix dist origin gh-pages`
+
