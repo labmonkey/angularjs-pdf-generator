@@ -26,6 +26,7 @@ export class PdfContainerComponent implements OnInit {
   // 12 x 29
 
   constructor(private dataService: DataService) {
+    this.pdfUrl = 'about:blank';
   }
 
   ngOnInit() {
@@ -38,82 +39,86 @@ export class PdfContainerComponent implements OnInit {
     this.updatePdfDocument(event);
   }
 
-  updatePdfDocument(event) {
-    const mmToPxRatio = 2.83466667;
-    const ptToMmRatio = 0.352777778;
+  updatePdfDocument(event: DocumentEvent) {
+    // event.includeBorders = true;
+    const mmToPtRatio = 2.83466667;
+    // const mmToPtRatio = 2.8346456692913384;
+    const marginSize = 9 * mmToPtRatio;
 
     const columns = 12;
-    const rows = 29;
+    const rows = 28;
 
     const pageWidth = 595.28;
-    const contentWidth = pageWidth - 2 * mmToPxRatio * 2.5;
-    const columnWidth = contentWidth / columns - 3 * ptToMmRatio;
+    const contentWidth = pageWidth - 2 * marginSize;
+    const columnWidth = 16 * mmToPtRatio - 0.5 - 0.5 / columns;
 
-    const topRowHeight = 3 * mmToPxRatio;
-    const bottomRowHeight = 7 * mmToPxRatio;
+    const topRowHeight = 3 * mmToPtRatio;
+    const bottomRowHeight = 7 * mmToPtRatio;
 
-    const tableBuilder = new TableBuilder(12, 29);
+    const tableBuilder = new TableBuilder(columns, rows);
 
-    // tableBuilder.addCell({
-    //   table: {
-    //     heights: [topRowHeight, bottomRowHeight],
-    //     widths: [columnWidth / 2, columnWidth / 2],
-    //     body: [
-    //       [
-    //         {
-    //           text: model.name,
-    //           colSpan: 2,
-    //           fontSize: 8,
-    //           alignment: 'center'
-    //         },
-    //         {}
-    //       ],
-    //       [{}, {}]
-    //     ]
-    //   },
-    //   layout: 'noBorders'
-    // });
-    //
-    // for (let i = 0; i < model.amount; i++) {
-    //   tableBuilder.addCell({
-    //     table: {
-    //       heights: [topRowHeight, bottomRowHeight],
-    //       widths: ['*', '*'],
-    //       body: [
-    //         [
-    //           {
-    //             text: model.price + ' zł',
-    //             fontSize: 8,
-    //             decoration: 'lineThrough',
-    //             // fillColor: 'red',
-    //             alignment: 'center'
-    //           },
-    //           {
-    //             text: model.discount + '%',
-    //             fontSize: 8,
-    //             // fillColor: 'green',
-    //             alignment: 'center'
-    //           }
-    //         ],
-    //         [
-    //           {
-    //             text: this.calculatePriceAfterDiscount(model.price, model.discount) + ' zł',
-    //             colSpan: 2,
-    //             fontSize: 12,
-    //             bold: true,
-    //             // fillColor: 'blue',
-    //             alignment: 'center',
-    //             margin: [0, 2, 0, 0]
-    //           },
-    //           {}
-    //         ]
-    //       ]
-    //     },
-    //     margin: 0,
-    //     // fillColor: 'yellow',
-    //     layout: 'noBorders'
-    //   });
-    // }
+    for (const item of event.items) {
+      tableBuilder.addCell({
+        table: {
+          heights: [topRowHeight, bottomRowHeight],
+          widths: [columnWidth / 2, columnWidth / 2],
+          body: [
+            [
+              {
+                text: item.name,
+                colSpan: 2,
+                fontSize: 8,
+                alignment: 'center'
+              },
+              {}
+            ],
+            [{}, {}]
+          ]
+        },
+        layout: 'noBorders'
+      });
+
+      for (let i = 0; i < item.amount; i++) {
+        tableBuilder.addCell({
+          table: {
+            heights: [topRowHeight, bottomRowHeight],
+            widths: ['*', '*'],
+            body: [
+              [
+                {
+                  text: item.price + ' zł',
+                  fontSize: 8,
+                  decoration: 'lineThrough',
+                  // fillColor: 'red',
+                  alignment: 'center'
+                },
+                {
+                  text: -item.discount + '%',
+                  fontSize: 8,
+                  // fillColor: 'green',
+                  alignment: 'center'
+                }
+              ],
+              [
+                {
+                  text: this.calculatePriceAfterDiscount(item.price, item.discount) + ' zł',
+                  colSpan: 2,
+                  fontSize: 12,
+                  bold: true,
+                  // fillColor: 'blue',
+                  alignment: 'center',
+                  margin: [0, 2, 0, 0]
+                },
+                {}
+              ]
+            ]
+          },
+          margin: 0,
+          // fillColor: 'yellow',
+          layout: 'noBorders'
+        });
+      }
+    }
 
     const widths = [];
 
@@ -123,13 +128,14 @@ export class PdfContainerComponent implements OnInit {
 
     const docDefinition = {
       pageSize: 'A4',
-      pageMargins: mmToPxRatio * 2.5,
+      pageMargins: marginSize,
       defaultStyle: {
         margin: 0
       },
       content: [{
+        // fillColor: 'yellow',
         table: {
-          heights: topRowHeight + bottomRowHeight,
+          heights: topRowHeight + bottomRowHeight - 0.5 - 0.5 / rows,
           widths,
           body: tableBuilder.buildTable(),
           margin: 0
@@ -137,10 +143,10 @@ export class PdfContainerComponent implements OnInit {
         layout: {
           hLineWidth(i, node) {
             console.log(i, node);
-            return event.includeBorders ? 1 : 0;
+            return event.includeBorders ? 0.5 : 0;
           },
           vLineWidth(i, node) {
-            return event.includeBorders ? 1 : 0;
+            return event.includeBorders ? 0.5 : 0;
           },
           paddingLeft(i, node) {
             return 0;
@@ -195,6 +201,7 @@ class TableBuilder {
     let rowIndex = 0;
     for (const cell of this.cells) {
       this.content[rowIndex][colIndex] = cell;
+      // this.content[rowIndex][colIndex] = rowIndex + ':' + colIndex;
 
       colIndex++;
       if (colIndex >= this.columns) {
