@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Sticker} from "../sticker";
-import {DataService} from "../data.service";
-import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {Sticker} from '../sticker';
+import {DataService} from '../data.service';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-document-form',
@@ -16,8 +16,6 @@ export class DocumentFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.dataService.currentModel.subscribe(model => this.model = model);
-
     this.stickerForm = this.formBuilder.group({
       items: this.formBuilder.array([this.createItem()])
     });
@@ -37,11 +35,11 @@ export class DocumentFormComponent implements OnInit {
   }
 
   addItem(): void {
-    this.items.push(this.formBuilder.group(this.createItem()));
+    this.items.push(this.createItem());
   }
 
   removeItem(index: number): void {
-    this.items.removeAt(index)
+    this.items.removeAt(index);
   }
 
   // get diagnostic() {
@@ -49,6 +47,6 @@ export class DocumentFormComponent implements OnInit {
   // }
 
   onSubmit() {
-    // this.dataService.changeModel(this.model);
+    this.dataService.changeModel(this.items.value);
   }
 }

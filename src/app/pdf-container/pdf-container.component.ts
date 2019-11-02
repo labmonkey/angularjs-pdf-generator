@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts.js";
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
-import {DataService} from "../data.service";
-import {Sticker} from "../sticker";
+import {DataService} from '../data.service';
+import {Sticker} from '../sticker';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -26,35 +26,34 @@ export class PdfContainerComponent implements OnInit {
   // 12 x 29
 
   constructor(private dataService: DataService) {
-    pdfMake.sizes
   }
 
   ngOnInit() {
-    this.dataService.currentModel.subscribe(model => this.onDocumentFormChange(model))
+    this.dataService.currentModel.subscribe(items => this.onDocumentFormChange(items));
 
-    this.updatePdfDocument(new Sticker("Name", 10, 10, 10));
+    this.updatePdfDocument(new Sticker('Name', 10, 10, 10));
   }
 
   onDocumentFormChange(model) {
-    console.log("hello", model);
+    console.log('hello', model);
     this.updatePdfDocument(model);
   }
 
   updatePdfDocument(model: Sticker) {
-    var mmToPxRatio = 2.83466667;
-    var ptToMmRatio = 0.352777778;
+    const mmToPxRatio = 2.83466667;
+    const ptToMmRatio = 0.352777778;
 
-    var columns = 12;
-    var rows = 29;
+    const columns = 12;
+    const rows = 29;
 
-    var pageWidth = 595.28;
-    var contentWidth = pageWidth - 2 * mmToPxRatio * 2.5;
-    var columnWidth = contentWidth / columns - 3 * ptToMmRatio;
+    const pageWidth = 595.28;
+    const contentWidth = pageWidth - 2 * mmToPxRatio * 2.5;
+    const columnWidth = contentWidth / columns - 3 * ptToMmRatio;
 
-    let topRowHeight = 3 * mmToPxRatio;
-    let bottomRowHeight = 7 * mmToPxRatio;
+    const topRowHeight = 3 * mmToPxRatio;
+    const bottomRowHeight = 7 * mmToPxRatio;
 
-    let tableBuilder = new TableBuilder(12, 29);
+    const tableBuilder = new TableBuilder(12, 29);
 
     tableBuilder.addCell({
       table: {
@@ -117,13 +116,13 @@ export class PdfContainerComponent implements OnInit {
       });
     }
 
-    var widths = [];
+    const widths = [];
 
-    for (var i = 0; i < columns; i++) {
+    for (let i = 0; i < columns; i++) {
       widths.push(columnWidth);
     }
 
-    var docDefinition = {
+    const docDefinition = {
       pageSize: 'A4',
       pageMargins: mmToPxRatio * 2.5,
       defaultStyle: {
@@ -132,27 +131,27 @@ export class PdfContainerComponent implements OnInit {
       content: [{
         table: {
           heights: topRowHeight + bottomRowHeight,
-          widths: widths,
+          widths,
           body: tableBuilder.buildTable(),
           margin: 0
         },
         layout: {
-          hLineWidth: function (i, node) {
+          hLineWidth(i, node) {
             return 1;
           },
-          vLineWidth: function (i, node) {
+          vLineWidth(i, node) {
             return 1;
           },
-          paddingLeft: function (i, node) {
+          paddingLeft(i, node) {
             return 0;
           },
-          paddingRight: function (i, node) {
+          paddingRight(i, node) {
             return 0;
           },
-          paddingTop: function (i, node) {
+          paddingTop(i, node) {
             return 0;
           },
-          paddingBottom: function (i, node) {
+          paddingBottom(i, node) {
             return 0;
           },
         }
@@ -194,8 +193,8 @@ class TableBuilder {
   buildTable() {
     let colIndex = 0;
     let rowIndex = 0;
-    for (let i = 0; i < this.cells.length; i++) {
-      this.content[rowIndex][colIndex] = this.cells[i];
+    for (const cell of this.cells) {
+      this.content[rowIndex][colIndex] = cell;
 
       colIndex++;
       if (colIndex >= this.columns) {
