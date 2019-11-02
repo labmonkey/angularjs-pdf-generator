@@ -1,26 +1,54 @@
 <div class="container">
-  <form #documentForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Nazwa</label>
-      <input type="text" class="form-control" id="name" name="name" required [(ngModel)]="model.name">
+  <form [formGroup]="stickerForm" (ngSubmit)="onSubmit()">
+
+    <div *ngFor="let item of items.controls; let i = index;">
+
+      <div class="card" [formGroup]="item">
+        <button type="button" class="close" aria-label="Close" (click)="removeItem(i)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="name">Nazwa</label>
+              <input type="text" class="form-control form-control-sm" id="name" formControlName="name" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="price">Cena oprawy</label>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" id="price" formControlName="price" numbersOnly required>
+                <div class="input-group-append">
+                  <span class="input-group-text">zł</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="discount">Wielkość zniżki</label>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" id="discount" formControlName="discount" numbersOnly required>
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="amount">Ilość naklejek</label>
+              <input type="text" class="form-control form-control-sm" id="amount" formControlName="amount" numbersOnly required>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="price">Cena oprawy</label>
-      <input type="text" class="form-control" id="price" name="price" required [(ngModel)]="model.price">
-    </div>
+    <button type="button" class="btn btn-light btn-sm btn-block add-sticker" (click)="addItem()">Dodaj naklejkę
+    </button>
 
-    <div class="form-group">
-      <label for="discount">Wielkość zniżki</label>
-      <input type="text" class="form-control" id="discount" name="discount" required [(ngModel)]="model.discount">
-    </div>
-
-    <div class="form-group">
-      <label for="amount">Ilość naklejek</label>
-      <input type="text" class="form-control" id="amount" name="amount" required [(ngModel)]="model.amount">
-    </div>
-
-    <button type="submit" class="btn btn-success">Generuj Dokument</button>
+    <button type="submit" class="btn btn-primary submit">Generuj Dokument</button>
 
   </form>
 </div>

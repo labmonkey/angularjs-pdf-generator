@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Sticker} from "../sticker";
 import {DataService} from "../data.service";
-import {NgForm} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-document-form',
@@ -10,22 +10,45 @@ import {NgForm} from "@angular/forms";
 })
 export class DocumentFormComponent implements OnInit {
 
-  @ViewChild('documentForm', {static: false}) ngForm: NgForm;
+  stickerForm: FormGroup;
 
-  model = new Sticker("Glasses", 150, 20, 10);
-
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
-    this.dataService.currentModel.subscribe(model => this.model = model);
+    // this.dataService.currentModel.subscribe(model => this.model = model);
+
+    this.stickerForm = this.formBuilder.group({
+      items: this.formBuilder.array([this.createItem()])
+    });
   }
 
-  get diagnostic() {
-    return JSON.stringify(this.model);
+  // convenience getters for easy access to form fields
+  get controls() {
+    return this.stickerForm.controls;
   }
+
+  get items() {
+    return this.controls.items as FormArray;
+  }
+
+  createItem(): FormGroup {
+    return this.formBuilder.group(new Sticker(null, null, null, null));
+  }
+
+  addItem(): void {
+    this.items.push(this.formBuilder.group(this.createItem()));
+  }
+
+  removeItem(index: number): void {
+    this.items.removeAt(index)
+  }
+
+  // get diagnostic() {
+  //   return JSON.stringify(this.model);
+  // }
 
   onSubmit() {
-    this.dataService.changeModel(this.model);
+    // this.dataService.changeModel(this.model);
   }
 }

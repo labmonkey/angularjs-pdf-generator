@@ -1,4 +1,5 @@
 export class Sticker {
+
   constructor(
     public name: string,
     public price: number,

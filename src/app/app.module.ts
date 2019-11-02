@@ -3,8 +3,9 @@ import {NgModule, Pipe, PipeTransform} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {DocumentFormComponent} from './document-form/document-form.component';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ReactiveFormsModule} from "@angular/forms";
 import {PdfContainerComponent} from './pdf-container/pdf-container.component';
+import { NumericDirective } from './numeric.directive';
 
 @Pipe({name: 'safe'})
 export class SafePipe implements PipeTransform {
@@ -17,21 +18,18 @@ export class SafePipe implements PipeTransform {
 }
 
 @NgModule({
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule
+  ],
   declarations: [
     AppComponent,
     SafePipe,
     DocumentFormComponent,
-    PdfContainerComponent
+    PdfContainerComponent,
+    NumericDirective
   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-
-
 }
