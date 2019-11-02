@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Sticker} from '../sticker';
 import {DataService} from '../data.service';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {DocumentEvent} from '../document-event';
 
 @Component({
   selector: 'app-document-form',
@@ -17,6 +18,7 @@ export class DocumentFormComponent implements OnInit {
 
   ngOnInit() {
     this.stickerForm = this.formBuilder.group({
+      includeBorders: new FormControl(false),
       items: this.formBuilder.array([this.createItem()])
     });
   }
@@ -47,6 +49,11 @@ export class DocumentFormComponent implements OnInit {
   // }
 
   onSubmit() {
-    this.dataService.changeModel(this.items.value);
+    const event: DocumentEvent = {
+      includeBorders: this.controls.includeBorders.value,
+      items: this.items.value
+    };
+
+    this.dataService.changeModel(event);
   }
 }

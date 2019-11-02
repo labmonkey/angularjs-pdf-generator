@@ -4,7 +4,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import {DataService} from '../data.service';
-import {Sticker} from '../sticker';
+import {DocumentEvent} from '../document-event';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -29,17 +29,16 @@ export class PdfContainerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataService.currentModel.subscribe(items => this.onDocumentFormChange(items));
-
-    this.updatePdfDocument(new Sticker('Name', 10, 10, 10));
+    this.dataService.currentEvent.subscribe(event => this.onDocumentFormChange(event));
   }
 
-  onDocumentFormChange(model) {
-    console.log('hello', model);
-    this.updatePdfDocument(model);
+  onDocumentFormChange(event: DocumentEvent) {
+    console.log('hello', event);
+
+    this.updatePdfDocument(event);
   }
 
-  updatePdfDocument(model: Sticker) {
+  updatePdfDocument(event) {
     const mmToPxRatio = 2.83466667;
     const ptToMmRatio = 0.352777778;
 
@@ -55,66 +54,66 @@ export class PdfContainerComponent implements OnInit {
 
     const tableBuilder = new TableBuilder(12, 29);
 
-    tableBuilder.addCell({
-      table: {
-        heights: [topRowHeight, bottomRowHeight],
-        widths: [columnWidth / 2, columnWidth / 2],
-        body: [
-          [
-            {
-              text: model.name,
-              colSpan: 2,
-              fontSize: 8,
-              alignment: 'center'
-            },
-            {}
-          ],
-          [{}, {}]
-        ]
-      },
-      layout: 'noBorders'
-    });
-
-    for (let i = 0; i < model.amount; i++) {
-      tableBuilder.addCell({
-        table: {
-          heights: [topRowHeight, bottomRowHeight],
-          widths: ['*', '*'],
-          body: [
-            [
-              {
-                text: model.price + ' zł',
-                fontSize: 8,
-                decoration: 'lineThrough',
-                // fillColor: 'red',
-                alignment: 'center'
-              },
-              {
-                text: model.discount + '%',
-                fontSize: 8,
-                // fillColor: 'green',
-                alignment: 'center'
-              }
-            ],
-            [
-              {
-                text: this.calculatePriceAfterDiscount(model.price, model.discount) + ' zł',
-                colSpan: 2,
-                fontSize: 12,
-                bold: true,
-                // fillColor: 'blue',
-                alignment: 'center',
-                margin: [0, 2, 0, 0]
-              },
-              {}
-            ]
-          ]
-        },
-        margin: 0,
-        // fillColor: 'yellow',
-        layout: 'noBorders'
-      });
-    }
+    // tableBuilder.addCell({
+    //   table: {
+    //     heights: [topRowHeight, bottomRowHeight],
+    //     widths: [columnWidth / 2, columnWidth / 2],
+    //     body: [
+    //       [
+    //         {
+    //           text: model.name,
+    //           colSpan: 2,
+    //           fontSize: 8,
+    //           alignment: 'center'
+    //         },
+    //         {}
+    //       ],
+    //       [{}, {}]
+    //     ]
+    //   },
+    //   layout: 'noBorders'
+    // });
+    //
+    // for (let i = 0; i < model.amount; i++) {
+    //   tableBuilder.addCell({
+    //     table: {
+    //       heights: [topRowHeight, bottomRowHeight],
+    //       widths: ['*', '*'],
+    //       body: [
+    //         [
+    //           {
+    //             text: model.price + ' zł',
+    //             fontSize: 8,
+    //             decoration: 'lineThrough',
+    //             // fillColor: 'red',
+    //             alignment: 'center'
+    //           },
+    //           {
+    //             text: model.discount + '%',
+    //             fontSize: 8,
+    //             // fillColor: 'green',
+    //             alignment: 'center'
+    //           }
+    //         ],
+    //         [
+    //           {
+    //             text: this.calculatePriceAfterDiscount(model.price, model.discount) + ' zł',
+    //             colSpan: 2,
+    //             fontSize: 12,
+    //             bold: true,
+    //             // fillColor: 'blue',
+    //             alignment: 'center',
+    //             margin: [0, 2, 0, 0]
+    //           },
+    //           {}
+    //         ]
+    //       ]
+    //     },
+    //     margin: 0,
+    //     // fillColor: 'yellow',
+    //     layout: 'noBorders'
+    //   });
+    // }
 
     const widths = [];
 
@@ -137,10 +136,11 @@ export class PdfContainerComponent implements OnInit {
         },
         layout: {
           hLineWidth(i, node) {
-            return 1;
+            console.log(i, node);
+            return event.includeBorders ? 1 : 0;
           },
           vLineWidth(i, node) {
-            return 1;
+            return event.includeBorders ? 1 : 0;
           },
           paddingLeft(i, node) {
             return 0;

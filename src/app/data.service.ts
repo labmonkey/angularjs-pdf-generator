@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {Sticker} from './sticker';
+import {DocumentEvent} from './document-event';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private messageSource = new BehaviorSubject(new Sticker(null, null, null, null));
+  private messageSource = new BehaviorSubject(new DocumentEvent());
 
-  currentModel = this.messageSource.asObservable();
+  currentEvent = this.messageSource.asObservable();
 
   constructor() {
   }
 
-  changeModel(model: Sticker) {
-    this.messageSource.next(model);
+  changeModel(event: DocumentEvent) {
+    this.messageSource.next(event);
   }
 }

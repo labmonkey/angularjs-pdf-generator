@@ -50,7 +50,15 @@
     <button type="button" class="btn btn-light btn-sm btn-block add-sticker" (click)="addItem()">Dodaj naklejkę
     </button>
 
-    <button type="submit" class="btn btn-primary submit">Generuj Dokument</button>
+
+    <div class="form-row form-footer">
+      <button type="submit" class="btn btn-primary submit">Generuj Dokument</button>
+
+      <div class="form-check form-check-inline">
+        <input type="checkbox" class="form-check-input" id="includeBorders" formControlName="includeBorders">
+        <label class="form-check-label" for="includeBorders">Pokaż ramki tabeli</label>
+      </div>
+    </div>
 
   </form>
 </div>
