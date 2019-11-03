@@ -34,6 +34,7 @@ export class DocumentFormComponent implements OnInit {
 
   createItem(): FormGroup {
     return this.formBuilder.group(new Sticker(null, null, null, null));
+    //return this.formBuilder.group(new Sticker('test', 9999.99, 0, 10));
   }
 
   addItem(): void {

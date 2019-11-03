@@ -60,62 +60,109 @@ export class PdfContainerComponent implements OnInit {
     for (const item of event.items) {
       tableBuilder.addCell({
         table: {
-          heights: [topRowHeight, bottomRowHeight],
-          widths: [columnWidth / 2, columnWidth / 2],
+          heights: [topRowHeight + bottomRowHeight],
+          widths: [columnWidth],
           body: [
             [
               {
                 text: item.name,
-                colSpan: 2,
                 fontSize: 8,
-                alignment: 'center'
-              },
-              {}
-            ],
-            [{}, {}]
+                alignment: 'center',
+                noWrap: true,
+                margin: 0
+              }
+            ]
           ]
         },
-        layout: 'noBorders'
+        layout: {
+          hLineWidth(i, node) {
+            return 0;
+          },
+          vLineWidth(i, node) {
+            return 0;
+          },
+          paddingLeft(i, node) {
+            return 0;
+          },
+          paddingRight(i, node) {
+            return 0;
+          },
+          paddingTop(i, node) {
+            return 0;
+          },
+          paddingBottom(i, node) {
+            return 0;
+          }
+        }
       });
 
-      for (let i = 0; i < item.amount; i++) {
+      for (let index = 0; index < item.amount; index++) {
+        const itemPrice = item.price + ' zł';
+        const itemDiscount = -item.discount + '%';
+        const itemDiscountPrice = this.calculatePriceAfterDiscount(item.price, item.discount) + ' zł';
+
+        const topRowFontSize = 5;
+        const bottomRowFontSize = 9;
+
         tableBuilder.addCell({
           table: {
             heights: [topRowHeight, bottomRowHeight],
-            widths: ['*', '*'],
+            widths: ['*', 'auto'],
             body: [
               [
                 {
-                  text: item.price + ' zł',
-                  fontSize: 8,
+                  text: itemPrice,
+                  fontSize: topRowFontSize,
                   decoration: 'lineThrough',
                   // fillColor: 'red',
-                  alignment: 'center'
+                  alignment: 'center',
+                  noWrap: true,
+                  margin: [0, 1, 0, 0]
                 },
                 {
-                  text: -item.discount + '%',
-                  fontSize: 8,
+                  text: itemDiscount,
+                  fontSize: topRowFontSize,
                   // fillColor: 'green',
-                  alignment: 'center'
+                  alignment: 'center',
+                  noWrap: true,
+                  margin: [0, 1, 0, 0]
                 }
               ],
               [
                 {
-                  text: this.calculatePriceAfterDiscount(item.price, item.discount) + ' zł',
+                  text: itemDiscountPrice,
                   colSpan: 2,
-                  fontSize: 12,
+                  fontSize: bottomRowFontSize,
                   bold: true,
                   // fillColor: 'blue',
                   alignment: 'center',
-                  margin: [0, 2, 0, 0]
+                  noWrap: true,
+                  margin: [0, 4, 0, -4]
                 },
                 {}
               ]
             ]
           },
-          margin: 0,
-          // fillColor: 'yellow',
-          layout: 'noBorders'
+          layout: {
+            hLineWidth(i, node) {
+              return 0;
+            },
+            vLineWidth(i, node) {
+              return 0;
+            },
+            paddingLeft(i, node) {
+              return 0;
+            },
+            paddingRight(i, node) {
+              return 0;
+            },
+            paddingTop(i, node) {
+              return 0;
+            },
+            paddingBottom(i, node) {
+              return 0;
+            }
+          }
         });
       }
     }
@@ -174,7 +221,14 @@ export class PdfContainerComponent implements OnInit {
   }
 
   calculatePriceAfterDiscount(price: number, discount: number) {
-    return price - (price * discount / 100);
+    return (price - (price * discount / 100)).toFixed(2);
+  }
+
+  calculateFontSize(text: string, baseSize: number) {
+    if (text.length > 8) {
+      return baseSize - 1;
+    }
+    return baseSize;
   }
 }
 
