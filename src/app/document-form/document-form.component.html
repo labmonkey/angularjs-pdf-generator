@@ -10,8 +10,8 @@
         <div class="card-body">
           <div class="form-row">
             <div class="form-group col-md-12">
-              <label for="name">Nazwa</label>
-              <input type="text" class="form-control form-control-sm" id="name" formControlName="name" required>
+              <label for="name">Nazwa <i><small>Opcjonalnie</small></i></label>
+              <input type="text" class="form-control form-control-sm" id="name" formControlName="name">
             </div>
           </div>
 
@@ -39,8 +39,13 @@
 
             <div class="form-group col-md-3">
               <label for="amount">Ilość naklejek</label>
-              <input type="text" class="form-control form-control-sm" id="amount" formControlName="amount"
-                     appNumbersOnly required>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" id="amount" formControlName="amount"
+                       appNumbersOnly required>
+                <div class="input-group-append">
+                  <span class="input-group-text">szt</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

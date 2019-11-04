@@ -47,54 +47,118 @@ export class PdfContainerComponent implements OnInit {
 
     const columns = 12;
     const rows = 28;
+    const cells = columns * rows;
 
-    const pageWidth = 595.28;
+    const pageWidth = 595.276;
+    const pageHeight = 841.89;
+    const borderWidth = 0.567;
+
+    // 70.866 , 116.22
+    // 45,315
+
     const contentWidth = pageWidth - 2 * marginSize;
-    const columnWidth = 16 * mmToPtRatio - 0.5 - 0.5 / columns;
+    // const columnWidth = 16 * mmToPtRatio - 0.5 - 0.5 / columns;
+    const columnWidth = 45.3543333333;
 
-    const topRowHeight = 3 * mmToPtRatio;
-    const bottomRowHeight = 7 * mmToPtRatio;
+    const columnHeight = 28.3464642857;
 
-    const tableBuilder = new TableBuilder(columns, rows);
+    // const topRowHeight = 3 * mmToPtRatio;
+    // const bottomRowHeight = 7 * mmToPtRatio;
+
+    const topRowHeight = 0.3 * columnHeight;
+    const bottomRowHeight = 0.7 * columnHeight;
+
+    let tableBuilder;
+
+    const columnWidths = [];
+
+    for (let i = 0; i < columns; i++) {
+      columnWidths.push(columnWidth - (event.includeBorders ? borderWidth : 0));
+    }
+
+    const pageContent = [];
+
+    tableBuilder = new TableBuilder(columns, rows);
+    let totalAmount = 0;
 
     for (const item of event.items) {
-      tableBuilder.addCell({
-        table: {
-          heights: [topRowHeight + bottomRowHeight],
-          widths: [columnWidth],
-          body: [
-            [
-              {
-                text: item.name,
-                fontSize: 8,
-                alignment: 'center',
-                noWrap: true,
-                margin: 0
-              }
-            ]
-          ]
-        },
-        layout: {
-          hLineWidth(i, node) {
-            return 0;
-          },
-          vLineWidth(i, node) {
-            return 0;
-          },
-          paddingLeft(i, node) {
-            return 0;
-          },
-          paddingRight(i, node) {
-            return 0;
-          },
-          paddingTop(i, node) {
-            return 0;
-          },
-          paddingBottom(i, node) {
-            return 0;
-          }
+      if (totalAmount % cells === 0) {
+        console.log('creating TableBuilder');
+        tableBuilder = new TableBuilder(columns, rows);
+        if (totalAmount !== 0) {
+          pageContent.push({
+            // fillColor: 'yellow',
+            table: {
+              heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
+              widths: columnWidths,
+              body: tableBuilder.buildTable(),
+              margin: 0
+            },
+            pageBreak: 'after',
+            layout: {
+              hLineWidth(i, node) {
+                return event.includeBorders ? borderWidth : 0;
+              },
+              vLineWidth(i, node) {
+                return event.includeBorders ? borderWidth : 0;
+              },
+              paddingLeft(i, node) {
+                return 0;
+              },
+              paddingRight(i, node) {
+                return 0;
+              },
+              paddingTop(i, node) {
+                return 0;
+              },
+              paddingBottom(i, node) {
+                return 0;
+              },
+            }
+          });
         }
-      });
+      }
+
+      if (item.name !== null && item.name !== '') {
+        tableBuilder.addCell({
+          table: {
+            heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
+            widths: [columnWidth],
+            body: [
+              [
+                {
+                  text: item.name,
+                  fontSize: 8,
+                  alignment: 'center',
+                  noWrap: true,
+                  margin: 0
+                }
+              ]
+            ]
+          },
+          layout: {
+            hLineWidth(i, node) {
+              return 0;
+            },
+            vLineWidth(i, node) {
+              return 0;
+            },
+            paddingLeft(i, node) {
+              return 0;
+            },
+            paddingRight(i, node) {
+              return 0;
+            },
+            paddingTop(i, node) {
+              return 0;
+            },
+            paddingBottom(i, node) {
+              return 0;
+            }
+          }
+        });
+        totalAmount++;
+      }
 
       for (let index = 0; index < item.amount; index++) {
         const itemPrice = item.price + ' zł';
@@ -106,7 +170,7 @@ export class PdfContainerComponent implements OnInit {
 
         tableBuilder.addCell({
           table: {
-            heights: [topRowHeight, bottomRowHeight],
+            heights: [topRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2, bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2],
             widths: ['*', 'auto'],
             body: [
               [
@@ -115,17 +179,17 @@ export class PdfContainerComponent implements OnInit {
                   fontSize: topRowFontSize,
                   decoration: 'lineThrough',
                   // fillColor: 'red',
-                  alignment: 'center',
+                  alignment: 'left',
                   noWrap: true,
-                  margin: [0, 1, 0, 0]
+                  margin: [2, 2, 0, -10]
                 },
                 {
                   text: itemDiscount,
                   fontSize: topRowFontSize,
                   // fillColor: 'green',
-                  alignment: 'center',
+                  alignment: 'right',
                   noWrap: true,
-                  margin: [0, 1, 0, 0]
+                  margin: [0, 2, 2, -10]
                 }
               ],
               [
@@ -137,7 +201,7 @@ export class PdfContainerComponent implements OnInit {
                   // fillColor: 'blue',
                   alignment: 'center',
                   noWrap: true,
-                  margin: [0, 4, 0, -4]
+                  margin: [0, 4, 0, -10]
                 },
                 {}
               ]
@@ -164,54 +228,52 @@ export class PdfContainerComponent implements OnInit {
             }
           }
         });
+        totalAmount++;
       }
     }
 
-    const widths = [];
 
-    for (let i = 0; i < columns; i++) {
-      widths.push(columnWidth);
-    }
+    pageContent.push({
+      // fillColor: 'yellow',
+      table: {
+        heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
+        widths: columnWidths,
+        body: tableBuilder.buildTable(),
+        margin: 0
+      },
+      // pageBreak: 'after',
+      layout: {
+        hLineWidth(i, node) {
+          return event.includeBorders ? borderWidth : 0;
+        },
+        vLineWidth(i, node) {
+          return event.includeBorders ? borderWidth : 0;
+        },
+        paddingLeft(i, node) {
+          return 0;
+        },
+        paddingRight(i, node) {
+          return 0;
+        },
+        paddingTop(i, node) {
+          return 0;
+        },
+        paddingBottom(i, node) {
+          return 0;
+        },
+      }
+    });
 
     const docDefinition = {
-      pageSize: 'A4',
-      pageMargins: marginSize,
+      pageSize: {width: pageWidth, height: pageHeight},
+      pageMargins: [25.551, 24.094, 25.513, 24.094],
       defaultStyle: {
         margin: 0
       },
-      content: [{
-        // fillColor: 'yellow',
-        table: {
-          heights: topRowHeight + bottomRowHeight - 0.5 - 0.5 / rows,
-          widths,
-          body: tableBuilder.buildTable(),
-          margin: 0
-        },
-        layout: {
-          hLineWidth(i, node) {
-            console.log(i, node);
-            return event.includeBorders ? 0.5 : 0;
-          },
-          vLineWidth(i, node) {
-            return event.includeBorders ? 0.5 : 0;
-          },
-          paddingLeft(i, node) {
-            return 0;
-          },
-          paddingRight(i, node) {
-            return 0;
-          },
-          paddingTop(i, node) {
-            return 0;
-          },
-          paddingBottom(i, node) {
-            return 0;
-          },
-        }
-      }]
+      content: pageContent
     };
 
-    // console.log(docDefinition);
+    console.log(docDefinition);
 
     pdfMake.createPdf(docDefinition).getDataUrl((outDoc) => {
       // document.getElementById('pdfV')[0].src = outDoc;
