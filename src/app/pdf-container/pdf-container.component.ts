@@ -80,45 +80,13 @@ export class PdfContainerComponent implements OnInit {
 
     tableBuilder = new TableBuilder(columns, rows);
     let totalAmount = 0;
+    let currentAmount = 0;
 
     for (const item of event.items) {
-      if (totalAmount % cells === 0) {
-        console.log('creating TableBuilder');
-        tableBuilder = new TableBuilder(columns, rows);
-        if (totalAmount !== 0) {
-          pageContent.push({
-            // fillColor: 'yellow',
-            table: {
-              heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
-              widths: columnWidths,
-              body: tableBuilder.buildTable(),
-              margin: 0
-            },
-            pageBreak: 'after',
-            layout: {
-              hLineWidth(i, node) {
-                return event.includeBorders ? borderWidth : 0;
-              },
-              vLineWidth(i, node) {
-                return event.includeBorders ? borderWidth : 0;
-              },
-              paddingLeft(i, node) {
-                return 0;
-              },
-              paddingRight(i, node) {
-                return 0;
-              },
-              paddingTop(i, node) {
-                return 0;
-              },
-              paddingBottom(i, node) {
-                return 0;
-              },
-            }
-          });
-        }
-      }
+      totalAmount += +item.amount + (item.name !== null && item.name !== '' ? 1 : 0);
+    }
 
+    for (const item of event.items) {
       if (item.name !== null && item.name !== '') {
         tableBuilder.addCell({
           table: {
@@ -157,7 +125,45 @@ export class PdfContainerComponent implements OnInit {
             }
           }
         });
-        totalAmount++;
+        currentAmount++;
+
+        if (currentAmount % cells === 0 || currentAmount === totalAmount) {
+          if (currentAmount !== 0) {
+            console.log('creating TableBuilder');
+            pageContent.push({
+              // fillColor: 'yellow',
+              table: {
+                heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
+                widths: columnWidths,
+                body: tableBuilder.buildTable(),
+                margin: 0
+              },
+              pageBreak: pageContent.length === 0 ? null : 'before',
+              layout: {
+                hLineWidth(i, node) {
+                  return event.includeBorders ? borderWidth : 0;
+                },
+                vLineWidth(i, node) {
+                  return event.includeBorders ? borderWidth : 0;
+                },
+                paddingLeft(i, node) {
+                  return 0;
+                },
+                paddingRight(i, node) {
+                  return 0;
+                },
+                paddingTop(i, node) {
+                  return 0;
+                },
+                paddingBottom(i, node) {
+                  return 0;
+                },
+              }
+            });
+
+            tableBuilder = new TableBuilder(columns, rows);
+          }
+        }
       }
 
       for (let index = 0; index < item.amount; index++) {
@@ -228,41 +234,47 @@ export class PdfContainerComponent implements OnInit {
             }
           }
         });
-        totalAmount++;
+        currentAmount++;
+
+        if (currentAmount % cells === 0 || currentAmount === totalAmount) {
+          if (currentAmount !== 0) {
+            console.log('creating TableBuilder');
+            pageContent.push({
+              // fillColor: 'yellow',
+              table: {
+                heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
+                widths: columnWidths,
+                body: tableBuilder.buildTable(),
+                margin: 0
+              },
+              pageBreak: pageContent.length === 0 ? null : 'before',
+              layout: {
+                hLineWidth(i, node) {
+                  return event.includeBorders ? borderWidth : 0;
+                },
+                vLineWidth(i, node) {
+                  return event.includeBorders ? borderWidth : 0;
+                },
+                paddingLeft(i, node) {
+                  return 0;
+                },
+                paddingRight(i, node) {
+                  return 0;
+                },
+                paddingTop(i, node) {
+                  return 0;
+                },
+                paddingBottom(i, node) {
+                  return 0;
+                },
+              }
+            });
+
+            tableBuilder = new TableBuilder(columns, rows);
+          }
+        }
       }
     }
-
-
-    pageContent.push({
-      // fillColor: 'yellow',
-      table: {
-        heights: topRowHeight + bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0),
-        widths: columnWidths,
-        body: tableBuilder.buildTable(),
-        margin: 0
-      },
-      // pageBreak: 'after',
-      layout: {
-        hLineWidth(i, node) {
-          return event.includeBorders ? borderWidth : 0;
-        },
-        vLineWidth(i, node) {
-          return event.includeBorders ? borderWidth : 0;
-        },
-        paddingLeft(i, node) {
-          return 0;
-        },
-        paddingRight(i, node) {
-          return 0;
-        },
-        paddingTop(i, node) {
-          return 0;
-        },
-        paddingBottom(i, node) {
-          return 0;
-        },
-      }
-    });
 
     const docDefinition = {
       pageSize: {width: pageWidth, height: pageHeight},
@@ -273,11 +285,7 @@ export class PdfContainerComponent implements OnInit {
       content: pageContent
     };
 
-    console.log(docDefinition);
-
     pdfMake.createPdf(docDefinition).getDataUrl((outDoc) => {
-      // document.getElementById('pdfV')[0].src = outDoc;
-      // console.log("setting", outDoc);
       this.pdfUrl = outDoc;
     });
   }
