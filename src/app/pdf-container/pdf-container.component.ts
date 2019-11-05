@@ -171,7 +171,7 @@ export class PdfContainerComponent implements OnInit {
         const itemDiscount = -item.discount + '%';
         const itemDiscountPrice = this.calculatePriceAfterDiscount(item.price, item.discount) + ' zł';
 
-        const topRowFontSize = 5;
+        const topRowFontSize = 6;
         const bottomRowFontSize = 9;
 
         tableBuilder.addCell({
@@ -187,7 +187,7 @@ export class PdfContainerComponent implements OnInit {
                   // fillColor: 'red',
                   alignment: 'left',
                   noWrap: true,
-                  margin: [2, 2, 0, -10]
+                  margin: [1, 2, 0, -10]
                 },
                 {
                   text: itemDiscount,
@@ -195,7 +195,7 @@ export class PdfContainerComponent implements OnInit {
                   // fillColor: 'green',
                   alignment: 'right',
                   noWrap: true,
-                  margin: [0, 2, 2, -10]
+                  margin: [0, 2, 1, -10]
                 }
               ],
               [
@@ -207,7 +207,7 @@ export class PdfContainerComponent implements OnInit {
                   // fillColor: 'blue',
                   alignment: 'center',
                   noWrap: true,
-                  margin: [0, 4, 0, -10]
+                  margin: [-1, 4, 0, -10]
                 },
                 {}
               ]
@@ -278,7 +278,8 @@ export class PdfContainerComponent implements OnInit {
 
     const docDefinition = {
       pageSize: {width: pageWidth, height: pageHeight},
-      pageMargins: [25.551 + 2 * mmToPtRatio, 24.094, 25.513 - 2 * mmToPtRatio, 24.094],
+      // pageMargins: [25.551, 24.094, 25.513, 24.094],
+      pageMargins: [24.094, 24.094, 24.094, 24.094],
       defaultStyle: {
         margin: 0
       },
