@@ -34,8 +34,6 @@ export class PdfContainerComponent implements OnInit {
   }
 
   onDocumentFormChange(event: DocumentEvent) {
-    console.log('hello', event);
-
     this.updatePdfDocument(event);
   }
 
