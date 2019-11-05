@@ -278,7 +278,7 @@ export class PdfContainerComponent implements OnInit {
 
     const docDefinition = {
       pageSize: {width: pageWidth, height: pageHeight},
-      pageMargins: [25.551, 24.094, 25.513, 24.094],
+      pageMargins: [25.551 + 2 * mmToPtRatio, 24.094, 25.513 - 2 * mmToPtRatio, 24.094],
       defaultStyle: {
         margin: 0
       },
