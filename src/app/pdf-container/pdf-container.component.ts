@@ -172,66 +172,110 @@ export class PdfContainerComponent implements OnInit {
         const topRowFontSize = 6;
         const bottomRowFontSize = 9;
 
-        tableBuilder.addCell({
-          table: {
-            heights: [topRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2, bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2],
-            widths: ['*', 'auto'],
-            body: [
-              [
-                {
-                  text: itemPrice,
-                  fontSize: topRowFontSize,
-                  decoration: 'lineThrough',
-                  // fillColor: 'red',
-                  alignment: 'left',
-                  noWrap: true,
-                  margin: [1, 2, 0, -10]
-                },
-                {
-                  text: itemDiscount,
-                  fontSize: topRowFontSize,
-                  // fillColor: 'green',
-                  alignment: 'right',
-                  noWrap: true,
-                  margin: [0, 2, 1, -10]
-                }
-              ],
-              [
-                {
-                  text: itemDiscountPrice,
-                  colSpan: 2,
-                  fontSize: bottomRowFontSize,
-                  bold: true,
-                  // fillColor: 'blue',
-                  alignment: 'center',
-                  noWrap: true,
-                  margin: [-1, 4, 0, -10]
-                },
-                {}
+        console.log(item.discount);
+
+        if (item.discount === '0' || item.discount === 0 || item.discount == null) {
+          tableBuilder.addCell({
+            table: {
+              heights: [(topRowHeight + bottomRowHeight) - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2],
+              widths: ['auto'],
+              body: [
+                [
+                  {
+                    text: itemDiscountPrice,
+                    fontSize: bottomRowFontSize,
+                    bold: true,
+                    // fillColor: 'blue',
+                    alignment: 'center',
+                    noWrap: true,
+                    margin: [-1, 9, 0, 0]
+                  }
+                ]
               ]
-            ]
-          },
-          layout: {
-            hLineWidth(i, node) {
-              return 0;
             },
-            vLineWidth(i, node) {
-              return 0;
-            },
-            paddingLeft(i, node) {
-              return 0;
-            },
-            paddingRight(i, node) {
-              return 0;
-            },
-            paddingTop(i, node) {
-              return 0;
-            },
-            paddingBottom(i, node) {
-              return 0;
+            layout: {
+              hLineWidth(i, node) {
+                return 0;
+              },
+              vLineWidth(i, node) {
+                return 0;
+              },
+              paddingLeft(i, node) {
+                return 0;
+              },
+              paddingRight(i, node) {
+                return 0;
+              },
+              paddingTop(i, node) {
+                return 0;
+              },
+              paddingBottom(i, node) {
+                return 0;
+              }
             }
-          }
-        });
+          });
+        } else {
+          tableBuilder.addCell({
+            table: {
+              heights: [topRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2, bottomRowHeight - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2],
+              widths: ['*', 'auto'],
+              body: [
+                [
+                  {
+                    text: itemPrice,
+                    fontSize: topRowFontSize,
+                    decoration: 'lineThrough',
+                    // fillColor: 'red',
+                    alignment: 'left',
+                    noWrap: true,
+                    margin: [1, 2, 0, -10]
+                  },
+                  {
+                    text: itemDiscount,
+                    fontSize: topRowFontSize,
+                    // fillColor: 'green',
+                    alignment: 'right',
+                    noWrap: true,
+                    margin: [0, 2, 1, -10]
+                  }
+                ],
+                [
+                  {
+                    text: itemDiscountPrice,
+                    colSpan: 2,
+                    fontSize: bottomRowFontSize,
+                    bold: true,
+                    // fillColor: 'blue',
+                    alignment: 'center',
+                    noWrap: true,
+                    margin: [-1, 4, 0, -10]
+                  },
+                  {}
+                ]
+              ]
+            },
+            layout: {
+              hLineWidth(i, node) {
+                return 0;
+              },
+              vLineWidth(i, node) {
+                return 0;
+              },
+              paddingLeft(i, node) {
+                return 0;
+              },
+              paddingRight(i, node) {
+                return 0;
+              },
+              paddingTop(i, node) {
+                return 0;
+              },
+              paddingBottom(i, node) {
+                return 0;
+              }
+            }
+          });
+        }
         currentAmount++;
 
         if (currentAmount % cells === 0 || currentAmount === totalAmount) {

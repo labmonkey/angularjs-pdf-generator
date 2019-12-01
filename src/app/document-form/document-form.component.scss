@@ -25,6 +25,10 @@ button.add-sticker {
 
 label {
   font-size: 0.8em;
+  small:hover {
+    text-decoration: underline;
+    font-weight: bold;
+  }
 }
 
 .close {
