@@ -172,9 +172,7 @@ export class PdfContainerComponent implements OnInit {
         const topRowFontSize = 6;
         const bottomRowFontSize = 9;
 
-        console.log(item.discount);
-
-        if (item.discount === '0' || item.discount === 0 || item.discount == null) {
+        if (+item.discount === 0 || item.discount == null) {
           tableBuilder.addCell({
             table: {
               heights: [(topRowHeight + bottomRowHeight) - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2],
