@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {versionInfo} from './version-info';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,9 @@ export class AppComponent implements OnInit {
   title = 'pdf-generator';
 
   ngOnInit(): void {
+  }
+
+  getVersion(): string {
+    return versionInfo.date + '-' + versionInfo.hash;
   }
 }

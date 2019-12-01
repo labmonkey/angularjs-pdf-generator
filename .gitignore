@@ -48,3 +48,5 @@ Thumbs.db
 .idea
 *.iml
 bower_components
+
+git-version.json

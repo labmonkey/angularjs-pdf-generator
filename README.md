@@ -8,5 +8,5 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 ## Build
 
-Deploy to GitHub Pages using `ng build --prod --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer --base-href 'https://labmonkey.github.io/angularjs-pdf-generator/'`
+Deploy to GitHub Pages using `npm run deploy`
 
