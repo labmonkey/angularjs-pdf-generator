@@ -176,7 +176,7 @@ export class PdfContainerComponent implements OnInit {
           tableBuilder.addCell({
             table: {
               heights: [(topRowHeight + bottomRowHeight) - (event.includeBorders ? borderWidth + borderWidth / rows : 0) / 2],
-              widths: ['auto'],
+              widths: ['*'],
               body: [
                 [
                   {
